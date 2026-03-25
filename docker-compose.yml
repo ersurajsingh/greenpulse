@@ -1,0 +1,36 @@
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2.0
+    ports:
+      - "1883:1883"
+    volumes:
+      - mosquitto_data:/mosquitto/data
+      - ./mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+
+  influxdb:
+    image: influxdb:2.7
+    ports:
+      - "8086:8086"
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_ORG: GreenPulse
+      DOCKER_INFLUXDB_INIT_BUCKET: telemetry
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: greenpulse-dev-token
+      DOCKER_INFLUXDB_INIT_USERNAME: admin
+      DOCKER_INFLUXDB_INIT_PASSWORD: adminpassword
+    volumes:
+      - influxdb_data:/var/lib/influxdb2
+      - influxdb_config:/etc/influxdb2
+
+  grafana:
+    image: grafana/grafana:10.4.2
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+
+volumes:
+  mosquitto_data:
+  influxdb_data:
+  influxdb_config:
+  grafana_data:
